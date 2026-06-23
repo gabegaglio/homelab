@@ -7,15 +7,15 @@ A Proxmox-based homelab running 10 LXC containers on a single node (`dev1`). Eac
 | CTID | Name | Role |
 |------|------|------|
 | 100  | [nousena](#100--nousena) | Docker host for the income/dashboard stack — [nousena.com](https://nousena.com) |
-| 101  | [mc-server](#101--mc-server) | Paper Minecraft server |
-| 103  | [mc-modded](#103--mc-modded) | Modded Fabric Minecraft server |
+| 101  | [mc-server](#101--mc-server) | Paper Minecraft server, managed by [lumberjack](https://github.com/gabegaglio/lumberjack) |
+| 103  | [mc-modded](#103--mc-modded) | Modded Fabric Minecraft server, managed by [lumberjack](https://github.com/gabegaglio/lumberjack) |
 | 200  | [obsidian](#200--obsidian) | Obsidian vault — source of truth, Syncthing send-receive |
 | 201  | [obsidian-ui](#201--obsidian-ui) | Obsidian web UI (Docker-in-LXC), Syncthing receive-only |
 | 300  | [pihole](#300--pihole) | Pi-hole v6 DNS + dnscrypt-proxy → Cloudflare DoH |
 | 400  | [immich](#400--immich) | Immich photo server (Docker compose) |
 | 500  | [pbs](#500--pbs) | Proxmox Backup Server 4.2 |
 | 600  | [home-assistant](#600--home-assistant) | Home Assistant |
-| 700  | [splunk](#700--splunk) | Splunk Enterprise 10.4 — central log analytics |
+| 700  | [splunk](#700--splunk) | Splunk Enterprise 10.4 — central log analytics, monitored by [vigosk](https://github.com/gabegaglio/vigosk) |
 
 ## Host (`dev1`)
 
@@ -96,7 +96,7 @@ Home Assistant for smart-home automation and device control.
 
 Splunk Enterprise 10.4 (`/opt/splunk`, `Splunkd.service`, web on `:8000`, mgmt on `:8089`). Central log analytics for the homelab — Minecraft servers ship logs via `splunkforwarder`; system logs are collected through the `journald_input` app. Dashboards built with `splunk-dashboard-studio` and `splunk-ai-canvas`.
 
-Monitoring tooling: **[vigosk](https://github.com/gabegaglio/vigosk)** — health & alerting layer on top of Splunk.
+Health & alerting on top of Splunk is handled by **[vigosk](https://github.com/gabegaglio/vigosk)** — the homelab monitor. It queries Splunk indexes for service health, container state, and forwarder heartbeats, and surfaces alerts when anything drifts.
 
 ## Conventions
 
