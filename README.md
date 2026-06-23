@@ -15,7 +15,7 @@ A Proxmox-based homelab running 10 LXC containers on a single node (`dev1`). Eac
 | 400  | [immich](#400--immich) | Immich photo server (Docker compose) |
 | 500  | [pbs](#500--pbs) | Proxmox Backup Server 4.2 |
 | 600  | [home-assistant](#600--home-assistant) | Home Assistant |
-| 700  | [splunk](#700--splunk) | Splunk Enterprise 10.4 — central log analytics, monitored by [vigosk](https://github.com/gabegaglio/vigosk) |
+| 700  | [splunk](#700--splunk) | Splunk Enterprise 10.4 — central log analytics |
 
 ## Host (`dev1`)
 
@@ -25,6 +25,7 @@ Proxmox node. Everything else is an LXC underneath. Acts as the control plane:
 - **Tailscale exit node** — pushes Pi-hole DNS to every device; DERP relay configured
 - **Vault bind-mount** — `/data/vault` is mounted from CT 200 and symlinked at `/vault`
 - **`ct` wrapper** — thin shim around `pct exec` for friendlier container ops
+- **[vigosk](https://github.com/gabegaglio/vigosk)** — homelab monitor running directly on dev1 (not in any container). Independent of Splunk; watches container state, host health, and service liveness across the node.
 
 ```bash
 ct list                          # status of all containers
@@ -95,8 +96,6 @@ Home Assistant for smart-home automation and device control.
 ### 700 — splunk
 
 Splunk Enterprise 10.4 (`/opt/splunk`, `Splunkd.service`, web on `:8000`, mgmt on `:8089`). Central log analytics for the homelab — Minecraft servers ship logs via `splunkforwarder`; system logs are collected through the `journald_input` app. Dashboards built with `splunk-dashboard-studio` and `splunk-ai-canvas`.
-
-Health & alerting on top of Splunk is handled by **[vigosk](https://github.com/gabegaglio/vigosk)** — the homelab monitor. It queries Splunk indexes for service health, container state, and forwarder heartbeats, and surfaces alerts when anything drifts.
 
 ## Conventions
 
