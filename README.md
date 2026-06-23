@@ -1,6 +1,14 @@
 # homelab
 
-A Proxmox-based homelab running 10 LXC containers on a single node (`dev1`). Each container is a single-purpose unit: app stacks run in Docker-in-LXC, infrastructure runs on the host.
+A Proxmox-based homelab (Nov. 2025 – present) running 10 LXC containers on a single node (`dev1`), behind a baremetal OPNsense router. Each container is a single-purpose unit: app stacks run in Docker-in-LXC, infrastructure runs on the host.
+
+## Network architecture
+
+- **OPNsense (baremetal, FreeBSD)** — edge router. Handles DHCP, DNS routing, and firewall rules. Enforces segmentation between internal-only services and externally exposed ones.
+- **Managed switch with dual-bridge VLAN topology** — the Proxmox host carries both an internal-services bridge and an external-services bridge; VLANs on the switch keep the two traffic planes isolated.
+- **Tailscale VPN mesh** — dev1 acts as the exit node and pushes Pi-hole DNS to every device on the mesh; DERP relay configured.
+- **Cloudflare Tunnel** — fronts [nousena.com](https://nousena.com) from CT 100. No inbound ports opened on the WAN side.
+- **Pi-hole + dnscrypt-proxy** (CT 300) — network-wide DNS filtering with upstream resolution encrypted to Cloudflare DoH.
 
 ## Topology
 
